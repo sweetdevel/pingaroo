@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block header_title %}Pingaroo{% endblock %}</title>
+        <!-- Bootstrap -->
+        {{ stylesheet_link('css/bootstrap.min.css') }}
+        {{ stylesheet_link('css/bootstrap-theme.min.css') }}
+        {{ stylesheet_link('css/jquery-dataTables.min.css') }}
+        <style type="text/css" rel="stylesheet">
+            a:hover {
+                text-decoration: none;
+            }
+        </style>
+        {% block header_css %}{% endblock %}
+
+        <script> 
+            var _this = new Object(); 
+            _this.baseUrl = 'http://{{ _SERVER['HTTP_HOST'] ~ config.application.baseUri }}';
+        </script>
+        {{ javascript_include('js/jquery.min.js') }}
+        {{ javascript_include('js/jquery.dataTables.min.js') }}
+        {{ javascript_include('js/bootstrap.min.js') }}
+        {{ javascript_include('js/functions.js') }}
+        {% block header_js %}{% endblock %}
+    </head>
+    <body>
+        
+        <div style="margin:10px">
+            {{ partial('common/partials/navbar') }}
+
+            <h1>{% block body_title %}Pingaroo{% endblock %}</h1>
+            {{ partial(
+                'common/flash/messages', 
+                ['messages' : flash.getMessages(true)])
+            }}
+            
+            {{ partial('common/flash/jsFlashMessage') }}
+            
+            <div id="content">{% block content %}{% endblock %}</div>
+            <div id="bottom">{% block bottom %}{% endblock %}</div>
+            <div id="footer">
+                {% block footer %}&copy; Pingaroo Copyright 2015, All rights reserved.{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>

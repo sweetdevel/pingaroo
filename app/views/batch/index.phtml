@@ -1,0 +1,126 @@
+{% extends "layouts/app.phtml" %}
+
+{% block header_title %} Pingaroo {% endblock %}
+{% block body_title %} Batch List {% endblock %}
+
+{% block content %} 
+<a href="{{ url('batch/new') }}"><button type="button" class="btn btn-sm btn-primary">New Batch</button></a>
+
+{% if reflected_batchId %}
+    <button type="button" class="btn btn-sm btn-danger"
+        onclick="confirmModelDelete({{ reflected_batchId }})">Delete</button>
+    <?php 
+        echo Phalcon\Tag::form(array(
+                'batch/delete/' . $reflected_batchId,
+                'method' => 'post',
+                'id'=>'modelForm_' . $reflected_batchId
+             ));
+        echo $this->tag->endForm();
+    ?>
+{% endif %}
+
+<br />
+<br />
+
+{{ partial('common/partials/confirmModelDelete') }}
+
+<div class="row">
+    <form action="{{ url('batch') }}" method="GET">
+        <div class="col-xs-3">
+            Batch
+            <br />
+            <select name="batchId" class="form-control">
+                <option value="-1">-- All Batches --</option>
+                {% for batch in batchIds %}
+                    <option value="{{ batch.id }}"
+                        {% if batch.id == reflected_batchId %}
+                            selected="selected"
+                        {% endif %}
+                    >{{ batch.id ~ ' - ' ~ batch.name }} </option>
+                {% endfor %}
+            <select>
+        </div>        
+        <div class="col-xs-3">
+            HTTP Code
+            <br />
+            <input type="text" name="httpCode" class="form-control" value="{{ reflected_httpCode|e }}" />
+        </div>
+        <div class="col-xs-3">
+            <br />
+            <input type="submit" class="form-control" value="search">
+        </div>
+    </form>
+        
+    <div style="clear:both"></div>
+    <br />
+    
+    <div class="col-xs-12">
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+            <table id="pingTable" class="table table-hover">
+                <thead>
+                    <th>Ping ID</th>
+                    <th>Proxy Country</th>
+                    <th>Proxy</th>
+                    <th>Url</th>
+                    <th>Http Code</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>                    
+                    {% for ping in pings %}
+                        <tr>
+                            <td>{{ ping.pingId }}</td>
+                            <td>
+                                <a class="btn btn-sm btn-default" href="{{ url('country/search/' ~ ping.countryId) }}" target="_blank">
+                                    {{ ping.proxyCountryCode }}
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-default" href="{{ url('proxy/search/' ~ ping.proxyId) }}" target="_blank">
+                                    {{ ping.proxyAddress }}
+                                </a>
+                            </td>
+                            <td>{{ ping.urlAddress }}</td>
+                            <td>
+                                {# IN PROGRESS #}
+                                {% if ping.httpCode == 1 %}
+                                    <span class="btn btn-sm btn-info">In progess...
+                                {% elseif ping.httpCode == 0 %}
+                                    <span class="btn btn-sm btn-danger">
+                                {% elseif ping.httpCode == 200 %}
+                                    <span class="btn btn-sm btn-success">
+                                {% elseif ping.httpCode == 404 %} 
+                                    <span class="btn btn-sm btn-default" style="background-color: black; color: white">
+                                {% elseif ping.httpCode == 500 %}
+                                    <span class="btn btn-sm btn-warning">
+                                {% else %}
+                                    <span class="btn btn-sm btn-default">
+                                {% endif %}
+                                    {{ ping.httpCode }}
+                                </span>
+                            </td>
+                            <td>{{ ping.duration }}</td>
+                            <td>
+                                <a target="_blank" href="{{ url("ping/search/" ~ ping.pingId) }}">
+                                    <button type="button" class="btn btn-sm btn-default">Show</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function(){
+    $('#pingTable').dataTable();
+});
+</script>
+     
+{% endblock %}
+
+{% block bottom %}
+{% endblock %}

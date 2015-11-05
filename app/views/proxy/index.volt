@@ -1,0 +1,67 @@
+{% extends "layouts/app.phtml" %} 
+
+{% block header_title %} Pingaroo {% endblock %}
+{% block header_js %} 
+    {{ partial('common/partials/confirmModelDelete') }}
+{% endblock %}
+{% block body_title %} Proxy List {% endblock %}
+ 
+{% block content %} 
+<a href="{{ url('proxy/new') }}"><button type="button" class="btn btn-sm btn-primary">New</button></a>
+<br />
+<br /> 
+
+<div class="row">
+    <div class="col-xs-12">
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+            <table id="countryTable" class="table table-hover">
+                <thead>
+                    <th>ID</th>
+                    <th>Country</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    {% for proxy in proxies %}
+                        <tr>
+                            <td>{{ proxy.id }}</td>
+                            <td>
+                                <?php 
+                                    $country = $proxy->getCountry();
+                                    echo $country->name;
+                                ?> 
+                            </td>
+                            <td>{{ proxy.address }}</td>
+                            <td>
+                                <a href="{{ url('proxy/search/' ~ proxy.id) }}">
+                                    <button type="button" class="btn btn-sm btn-default">Show</button>
+                                </a>
+                                <a href="{{ url('proxy/edit/' ~ proxy.id) }}">
+                                    <button type="button" class="btn btn-sm btn-success">Edit</button>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                    onclick="confirmModelDelete({{ proxy.id }})">Delete</button>
+                                <?php 
+                                    echo Phalcon\Tag::form(array('proxy/delete/' . $proxy->id, 'method' => 'post', 'id'=>'modelForm_' . $proxy->id));
+                                    echo $this->tag->endForm();
+                                ?>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function(){
+    $('#countryTable').dataTable();
+});
+</script>
+     
+{% endblock %}
+
+{% block bottom %}
+{% endblock %}
