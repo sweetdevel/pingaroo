@@ -22,6 +22,22 @@ class SystemUtility {
         return date('Y-m-d H:i:s');
     }
     
+    public static function runAsyncCommand($config, $cmd) {
+        if(PHP_OS == 'WINNT') {            
+            $command = str_replace(
+                        '{async_command}', 
+                        $cmd, 
+                        $config->misc->Windows->async_exec_command
+                      );       
+        } else {
+            // TODO: Add command for linux
+            $command = null;
+        }
+
+        #var_dump($command); exit;
+        shell_exec($command);
+    }
+    
     public static function log($data, $withDelimiter = false) {
         $nl = '
 ';

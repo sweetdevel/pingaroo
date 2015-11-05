@@ -13,29 +13,27 @@ class NetUtility {
      * @param array $options
      * @return array
      * 
-     * @throws \Exception
+     * @throws Exception
      */
     public static function curl($url, $options = []) {
-
-        $options = array_merge(
-            array(
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => $url
-            ),
-            $options
+        $curl = curl_init();
+        curl_setopt_array(
+            $curl
+            , array(
+                CURLOPT_RETURNTRANSFER => 1
+                , CURLOPT_URL => $url
+            )
+            + $options
         );
 
-        $curl = curl_init();
-        curl_setopt_array($curl, $options);
-
         $response = curl_exec($curl);
-        $info = curl_getinfo($curl);
 
+        $info = curl_getinfo($curl);
         $arResult = array(
-            'response' => $response,
-            'httpCode' => $info['http_code'],
-            'error' => curl_error($curl),
-            'info' => $info
+            'response' => $response
+            , 'httpCode' => $info['http_code']
+            , 'error' => curl_error($curl)
+            , 'info' => $info
         );
         
         curl_close($curl);

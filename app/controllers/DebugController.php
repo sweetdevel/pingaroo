@@ -7,8 +7,10 @@ use Phalcon\Mvc\Model\Query\Builder;
 
 class DebugController extends BaseController {
     public function indexAction() {
+        print_r(get_loaded_extensions());
         set_time_limit(0);
-        
+        exit;
+
         $this->createProxies();
         
         $this->view->disable();

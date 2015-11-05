@@ -7,7 +7,7 @@ use Phalcon\Mvc\Url;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Application;
 use Phalcon\Flash\Session;
-use Phalcon\Session\Adapter\Files;
+use Phalcon\Session\Adapter\Files as Files;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\Router;
@@ -50,6 +50,7 @@ class Bootstrap
             'db',
             'flash',
             'cache',
+            'composer'
         );
 
         foreach ($loaders as $service) {
@@ -285,5 +286,14 @@ class Bootstrap
 
             return $cache;
         }, true);
+    }
+    
+    /**
+     * Loads the libraries registered by Composer in the libraries dir
+     * 
+     * @param type $options
+     */
+    protected function initComposer($options = array()) {
+        require_once(ROOT_PATH . '/app/library/vendor/autoload.php');
     }
 }
